@@ -1,0 +1,71 @@
+function [avg_wf, motion_detected] = ReadAndGetAvg(downFactor)
+% Read movies and generate averaged fluorescent traces
+
+    if nargin < 1
+        downFactor = 4;
+    end
+    
+    % Search tif files
+    movieList = dir('*.tif');
+    motion_detected = [];
+    downA = [];
+    avg_wf = [];
+    roi = ROI;
+    nmovies = length(movieList);
+    savefn = [movieList(1).name(1:end-4) '_' num2str(nmovies) 'combined_' ...
+    num2str(downFactor) '_avgtrace.mat'];
+    savefn2 = [movieList(1).name(1:end-4) '_' num2str(nmovies) 'combined_' ...
+    num2str(downFactor) '_downsampled.mat'];
+
+    if exist(savefn, 'file')
+        load(savefn);
+        disp('Loading the existing averaged trace');
+    else
+
+        for i = 1:nmovies
+            tic;
+            disp(['Reading movie #' num2str(i)]);
+            
+            % Read raw data
+            A0 = movieData.inputMovie(movieList(i).name);
+            
+            % Downsampling
+            A1 = movieData.downSampleMovie(A0,downFactor,1);
+            
+            % Rigid registration
+            [A2, output_all] = movieData.dftReg(A1);
+            
+            % Get indices or moving frames
+            output_all = output_all(:,3) + output_all(:,4);
+            output_all = output_all > 0;
+            motion_detected = [motion_detected; output_all];
+            
+            clear A1;
+            
+            % Apply rois
+            if ~isempty(roi.ROIData)
+                A3 = ROI.ApplyMask(A2, roi.ROIData, downFactor);
+            else
+                A3 = A2;
+            end
+            
+            clear A2 output_all
+            
+            % Get averaged traces 
+            cur_avg = nanmean(nanmean(A3,1),2);
+            cur_avg = cur_avg(:);
+            avg_wf = [avg_wf; cur_avg];
+            downA = cat(3, downA, A3);
+
+            clear A3;
+            clearAllMemoizedCaches;
+            toc;
+        end
+
+        downA = single(downA);
+
+        save(savefn, 'avg_wf', 'motion_detected');
+        save(savefn2, 'downA', '-v7.3');
+    end
+
+end
