@@ -24,6 +24,7 @@ function MotionActivityPreProcessing(cur_folder, downFactor)
     
     % dFoF
     A_dFoF = movieData.grossDFoverF(A6, 1, 10);
+    A_dFoF = single(A_dFoF);
     
     clear A6
     
