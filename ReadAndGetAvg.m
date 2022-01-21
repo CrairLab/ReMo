@@ -2,7 +2,7 @@ function [avg_wf, motion_detected, downA] = ReadAndGetAvg(downFactor, loadmovie)
 % Read movies and generate averaged fluorescent traces
 
     if nargin < 1
-        downFactor = 4;
+        downFactor = 2;
         loadmovie = 0;
     elseif nargin < 2
         loadmovie = 0;

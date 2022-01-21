@@ -1,4 +1,6 @@
 function MotionActivityPreProcessing(cur_folder, downFactor)
+%Do preprocessing on movies in current folder by combining them first and
+%do other preprocessing steps
 
     if nargin < 2
         downFactor = 2;
