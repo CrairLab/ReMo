@@ -1,7 +1,7 @@
-function [avg_wf, motion_detected] = ReadAndGetAvg(downFactor)
+function [avg_wf, motion_detected, downA] = ReadAndGetAvg(downFactor)
 % Read movies and generate averaged fluorescent traces
 
-    if nargin < 1
+    if nargin < 2
         downFactor = 4;
     end
     
@@ -26,35 +26,11 @@ function [avg_wf, motion_detected] = ReadAndGetAvg(downFactor)
             tic;
             disp(['Reading movie #' num2str(i)]);
             
-            % Read raw data
-            A0 = movieData.inputMovie(movieList(i).name);
-            
-            % Downsampling
-            A1 = movieData.downSampleMovie(A0,downFactor,1);
-            
-            % Rigid registration
-            [A2, output_all] = movieData.dftReg(A1);
-            
-            % Get indices or moving frames
-            output_all = output_all(:,3) + output_all(:,4);
-            output_all = output_all > 0;
+            % Read movies, rigid-registration, and apply rois
+            [A3, output_all] = ReadRegisterRoi(movieList(i).name, roi);
             motion_detected = [motion_detected; output_all];
             
-            clear A1;
-            
-            % Apply rois
-            if ~isempty(roi.ROIData)
-                A3 = ROI.ApplyMask(A2, roi.ROIData, downFactor);
-            else
-                A3 = A2;
-            end
-            
-            clear A2 output_all
-            
-            % Get averaged traces 
-            cur_avg = nanmean(nanmean(A3,1),2);
-            cur_avg = cur_avg(:);
-            avg_wf = [avg_wf; cur_avg];
+            % Concatenate downsampled movies
             downA = cat(3, downA, A3);
 
             clear A3;
@@ -63,6 +39,9 @@ function [avg_wf, motion_detected] = ReadAndGetAvg(downFactor)
         end
 
         downA = single(downA);
+        % Get averaged traces
+        avg_wf = nanmean(nanmean(downA,1),2);
+        avg_wf = avg_wf(:);
 
         save(savefn, 'avg_wf', 'motion_detected');
         save(savefn2, 'downA', '-v7.3');

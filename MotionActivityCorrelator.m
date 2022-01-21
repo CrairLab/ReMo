@@ -21,7 +21,7 @@ function CorrelateMotionAndActivity(cur_folder)
         if ~exist('summary_traces.mat', 'file')
             
             %Get averaged fluorescent traces
-            [avg_wf, motion_detected] = ReadAndGetAvg(4);
+            [avg_wf, motion_detected, ~] = ReadAndGetAvg(4);
             
             %Get motion energy
             wh_filt = ComputeMotionEnergy(4);
