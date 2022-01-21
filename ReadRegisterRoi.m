@@ -1,6 +1,6 @@
 function [A3, output_all] = ReadRegisterRoi(filename, roi)
 
-if nargain < 2
+if nargin < 2
     roi.ROIData = [];
 end
 
