@@ -1,8 +1,13 @@
-function [A3, output_all] = ReadRegisterRoi(filename, roi)
+function [A3, output_all] = ReadRegisterRoi(filename, roi, downFactor)
+% Read, register, apply roi, and downsample a movie
 
-if nargin < 2
-    roi.ROIData = [];
-end
+    if nargin < 2
+        roi.ROIData = [];
+        downFactor = 2;
+    elseif nargin < 3
+        downFactor = 2;
+    end
+
 
  % Read raw data
     A0 = movieData.inputMovie(filename);
@@ -29,6 +34,6 @@ end
         A3 = A2;
     end
 
-    clear A2 output_all
+    clear A2
             
 end

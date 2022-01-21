@@ -34,7 +34,7 @@ function [avg_wf, motion_detected, downA] = ReadAndGetAvg(downFactor, loadmovie)
             disp(['Reading movie #' num2str(i)]);
             
             % Read movies, rigid-registration, and apply rois
-            [A3, output_all] = ReadRegisterRoi(movieList(i).name, roi);
+            [A3, output_all] = ReadRegisterRoi(movieList(i).name, roi, downFactor);
             motion_detected = [motion_detected; output_all];
             
             % Concatenate downsampled movies
