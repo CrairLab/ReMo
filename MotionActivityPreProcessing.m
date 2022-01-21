@@ -7,7 +7,7 @@ function MotionActivityPreProcessing(cur_folder, downFactor)
     cd(cur_folder);
     disp(['Working on ' cur_folder]);
     
-    [~, ~, A4] = ReadAndGetAvg(downFactor);
+    [~, ~, A4] = ReadAndGetAvg(downFactor, 1);
     
     % Photobleaching correction
     

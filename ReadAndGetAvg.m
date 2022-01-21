@@ -1,8 +1,11 @@
-function [avg_wf, motion_detected, downA] = ReadAndGetAvg(downFactor)
+function [avg_wf, motion_detected, downA] = ReadAndGetAvg(downFactor, loadmovie)
 % Read movies and generate averaged fluorescent traces
 
-    if nargin < 2
+    if nargin < 1
         downFactor = 4;
+        loadmovie = 0;
+    elseif nargin < 2
+        loadmovie = 0;
     end
     
     % Search tif files
@@ -20,6 +23,10 @@ function [avg_wf, motion_detected, downA] = ReadAndGetAvg(downFactor)
     if exist(savefn, 'file')
         load(savefn);
         disp('Loading the existing averaged trace');
+        if loadmovie
+            load(savefn2);
+            disp('Loading the existing downsampled movie')
+        end            
     else
 
         for i = 1:nmovies
