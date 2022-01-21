@@ -6,6 +6,7 @@ function MotionActivityCorrelator(txtpath, downFactor)
 
     % Read in paths/ directories from summary_dirs.txt
     DirList = readtext(txtpath);
+    DirList = DirList(~cellfun('isempty', DirList));
     nDir = length(DirList);
 
     % Go over each folder to do the analysis
