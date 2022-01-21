@@ -32,6 +32,9 @@ function MotionActivityPreProcessing(cur_folder, downFactor)
     
     save([savefn '.mat'], 'A_dFoF', '-v7.3');
     
+    disp('Doing seed-based correlation analysis...')
+    movieData.SeedBasedCorr_GPU(A_dFoF, downFactor, 1000);
+    
     clearAllMemoizedCaches;
     
 end
