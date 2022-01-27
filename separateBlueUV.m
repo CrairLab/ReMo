@@ -15,10 +15,12 @@ function [A4B, A4U] = separateBlueUV(A4, blueInitial, matchflag)
     
     
     % match number of frames in A and B
+    % WARNING: BE AWARE THAT CURRENT SET-UP DEPENDS ON UV FRAMES
+    % TRIGGERED BY PRECEDING BLUE FRAMES
     if matchflag
         if size(A4B, 3) >= size(A4U, 3)
             A4B = A4B(:, :, 1:size(A4U, 3));
-            blueFrames = blueFrames(1:legnth(uvFrames));
+            blueFrames = blueFrames(1:length(uvFrames));
         else
             try
                 A4U = A4U(:, :, 2:size(A4B, 3)+1);
