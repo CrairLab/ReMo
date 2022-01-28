@@ -16,9 +16,8 @@ function wh_filt = ComputeMotionEnergy(downFactor, param)
         load(searchfile);
         disp('Loading existing motion energy data...')
     else
-        
-        reader = VideoReader([listing.folder,'\',listing.name]);
-        nframes = reader.NumberofFrames;
+        reader = VideoReader(fullfile(listing.folder,listing.name));
+        nframes = reader.NumFrames;
         downHeight = ceil(reader.Height / downFactor);
         downWidth =  ceil(reader.Width / downFactor);
         movA = zeros(downHeight, downWidth, nframes, 'uint8');
