@@ -12,7 +12,7 @@ function [A4B, A4U] = separateBlueUV(A4, blueInitial, matchflag)
     A4B = A4(:,:,blueFrames);
     A4U = A4(:,:,uvFrames);
     
-    
+    clear A4
     
     % match number of frames in A and B
     % WARNING: BE AWARE THAT CURRENT SET-UP DEPENDS ON UV FRAMES

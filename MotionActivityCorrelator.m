@@ -19,8 +19,8 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
         A_dFoF = MotionActivityPreProcessing(cur_folder, downFactor, param);
         
         % Seed-based correlation
-        disp('Doing seed-based correlation analysis...')
-        movieData.SeedBasedCorr_GPU(A_dFoF, downFactor, 1000);
+        %disp('Doing seed-based correlation analysis...')
+        %movieData.SeedBasedCorr_GPU(A_dFoF, downFactor, 1000);
         
         % Correlate motion and activity for each channel
         [~, wh_filt] = CorrelateMotionAndActivity(cur_folder, downFactor, param);
@@ -29,8 +29,10 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
         if param.blueInitial
             avg_wf = nanmean(nanmean(A_dFoF, 1),2);
             avg_wf = avg_wf(:);
-            renewPlots(avg_wf, wh_filt(:,1), 300, 'Blue_UVregressed')
+            renewPlots(avg_wf, wh_filt(:,1), 30, 'Blue_UVregressed')
         end
+        
+        clear A_dFoF
     end
 
 end

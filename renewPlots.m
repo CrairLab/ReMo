@@ -1,8 +1,10 @@
 function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
-%Generate plots based on given traces 
+%Generate plots based on given traces
             
+    SkipInitialFrames = 1500;
+    
     if nargin < 3
-        smooth_filter = 300;
+        smooth_filter = 30;
         colorflag = 'Blue';
     elseif nargin < 4
         colorflag = 'Blue';
@@ -10,9 +12,8 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
 
     % Correct photobleaching
     if strcmp(colorflag,  'Blue_UVregressed')
-        dff = avg_wf;
-        f_detrend = [];
-        
+        f_detrend = doTopHat(avg_wf, 600);
+        dff = f_detrend;
     else
         x = 1:length(avg_wf); x = x';
         f = fit(x,avg_wf,'exp1');
@@ -27,16 +28,15 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
         %f_detrend = detrend(f_debleached, 2);
 
         % Detrend by tophat filtering
-        hat = 600; se = strel('line', hat, 0);    
-        ff = flipud(f_debleached(1:hat)')';
-        f_tophat = [-ff + 2 * f_debleached(1); f_debleached];
-        f_detrend = imtophat(f_tophat', se);
-        f_detrend = f_detrend(hat+1:end);
-        f_detrend = f_detrend';
+        f_detrend = doTopHat(f_debleached, 600);
 
         % Get dff
         dff = f_detrend./ meanF ;
     end
+    
+    % Skip initial frames (light response etc)
+    dff = dff(SkipInitialFrames: end);
+    wh_filt_ = wh_filt(SkipInitialFrames: end);
     
     % F smoothing
     dff_smoothed = smooth(dff, smooth_filter);
@@ -58,8 +58,8 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
     %zdff_detrend_filt = filter(b,a,zdff_detrend);
 
     % Zscore and smooth motion energy
-    wh_filt_z = zscore(wh_filt);
-    wh_filt_thresh = wh_filt>0.005;
+    wh_filt_z = zscore(wh_filt_);
+    wh_filt_thresh = wh_filt_ > 0.005;
     wh_filt_smoothed = smooth(abs(wh_filt_z), smooth_filter);
 
     h1 = figure;
@@ -85,9 +85,34 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
     title('dF/F (detrended & smoothed)'); xlim([1, length(avg_wf)]);
     saveas(h4, [colorflag '_detrendeddFF_smoothed.png'])
 
+    h5 = figure; 
+    if length(zdff_detrend_smoothed) >= length(wh_filt_smoothed)
+        zdff_detrend_smoothed_ = zdff_detrend_smoothed(1:length(wh_filt_smoothed));
+        wh_filt_smoothed_ = wh_filt_smoothed;
+    else
+        wh_filt_smoothed_ = wh_filt_smoothed(1:length(zdff_detrend_smoothed));
+        zdff_detrend_smoothed_ = zdff_detrend_smoothed;
+    end
+    [c,lags] = xcorr(zdff_detrend_smoothed_, wh_filt_smoothed_, 600,'normalized');
+    stem(lags,c)
+    title('Cross-correlation btw zscored dFF and zscored motion energy')
+    saveas(h5, [colorflag '_xcorr_zscored_smoothed.png'])
+    
     save([colorflag '_summary_traces.mat'], 'avg_wf', 'zdff', 'wh_filt',...
         'wh_filt_thresh', 'zdff_detrend', 'zdff_detrend_smoothed', ...
         'wh_filt_z', 'wh_filt_smoothed', 'f_detrend', ...
-        'dff', 'dff_smoothed')
+        'dff', 'dff_smoothed', 'SkipInitialFrames', 'smooth_filter')
     
+end
+
+
+function f_detrend = doTopHat(f_input, hat)
+
+    se = strel('line', hat, 0);    
+    ff = flipud(f_input(1:hat)')';
+    f_tophat = [-ff + 2 * f_input(1); f_input];
+    f_detrend = imtophat(f_tophat', se);
+    f_detrend = f_detrend(hat+1:end);
+    f_detrend = f_detrend';
+
 end

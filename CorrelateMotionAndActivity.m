@@ -19,7 +19,7 @@ function [avg_wf, wh_filt] = CorrelateMotionAndActivity(cur_folder, downFactor, 
         fn = [colortag '_summary_traces.mat'];
         
         cd(cur_folder);
-        smooth_filter = 300; % Smooth over 300 frames
+        smooth_filter = 30; % Smooth over 30 frames
         disp(['Working on ' cur_folder]);
         
         if ~exist(fn, 'file')
@@ -28,7 +28,7 @@ function [avg_wf, wh_filt] = CorrelateMotionAndActivity(cur_folder, downFactor, 
             [avg_wf, motion_detected, ~] = ReadAndGetAvg(downFactor, 0 , param);
             
             %Get motion energy
-            wh_filt = ComputeMotionEnergy(downFactor, param);
+            wh_filt = ComputeMotionEnergy(downFactor*2, param);
             
             %Generate plots
             if size(avg_wf, 2) == 2
