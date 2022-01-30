@@ -56,8 +56,6 @@ function A_dFoF = singleWavelengthPipe(downFactor)
 
         clear A6
 
-        save(savefn, 'A_dFoF', '-v7.3');
-
 end
 
 
