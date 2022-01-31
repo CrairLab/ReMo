@@ -3,12 +3,19 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
     if nargin < 2 
         downFactor = 2;
         param.blueInitial = 0;
-        param.efr = 10;  %Note that this must be effective frame rates
+        param.fr = 10;  
     elseif nargin < 3
         param.blueInitial = 0;
-        param.efr = 10;  %Note that this must be effective frame rates
+        param.fr = 10;  
     end
-
+    
+    if param.blueInitial
+        disp('Dual wavelengths analysis...')
+        param.efr = param.fr / 2; % Effective frame rate is half of the acquisition rate 
+    else
+        param.efr = param.fr;
+    end
+        
     % Read in paths/ directories from summary_dirs.txt
     DirList = readtext(txtpath);
     DirList = DirList(~cellfun('isempty', DirList));
