@@ -4,8 +4,10 @@ function [avg_wf, wh_filt] = CorrelateMotionAndActivity(cur_folder, downFactor, 
     if nargin < 2
         downFactor = 2;
         param.blueInitial = 0;
+        param.efr = 10;
     elseif nargin < 3
         param.blueInitial = 0;
+        param.efr = 10;
     end
 
     try
@@ -19,7 +21,7 @@ function [avg_wf, wh_filt] = CorrelateMotionAndActivity(cur_folder, downFactor, 
         fn = [colortag '_summary_traces.mat'];
         
         cd(cur_folder);
-        smooth_filter = 30; % Smooth over 30 frames
+        smooth_filter = 30 * param.efr / 10; % Smooth over 30 frames if frame rate is 10 Hz
         disp(['Working on ' cur_folder]);
         
         if ~exist(fn, 'file')

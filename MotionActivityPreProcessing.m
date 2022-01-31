@@ -4,11 +4,13 @@ function A_dFoF = MotionActivityPreProcessing(cur_folder, downFactor, param)
 
     if nargin < 2
         downFactor = 2;
-        param.blueInitial = 2;
+        param.blueInitial = 0;
+        param.efr = 10;
     end
 
     cd(cur_folder);
     disp(['Working on ' cur_folder]);
+    save('parameters.mat', 'param')
 
     savefn = ['Combined_downsampled_' num2str(downFactor) '_' ...
         num2str(param.blueInitial) '_filtered.mat'];

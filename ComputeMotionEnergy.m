@@ -3,8 +3,11 @@ function wh_filt = ComputeMotionEnergy(downFactor, param)
 
     if nargin < 1
         downFactor = 4;
+        param.blueInitial = 0;
+        param.efr = 10;
     else
-        param.blueInitial = 2;
+        param.blueInitial = 0;
+        param.efr = 10;
     end
     
     % Search for infrared cam recordings
@@ -42,8 +45,8 @@ function wh_filt = ComputeMotionEnergy(downFactor, param)
             clear movA_B
             [mot_frame_U, wh_mot_U, wh_total_U] = getMotionEnergy(movA_U);
             clear movA_U
-            wh_filt_B = compute_wh_filt(wh_mot_B, wh_total_B, 5);
-            wh_filt_U = compute_wh_filt(wh_mot_U, wh_total_U, 5);
+            wh_filt_B = compute_wh_filt(wh_mot_B, wh_total_B, param.efr);
+            wh_filt_U = compute_wh_filt(wh_mot_U, wh_total_U, param.efr);
             wh_filt = [wh_filt_B wh_filt_U];
             wh_mot = [wh_mot_B wh_mot_U];
             wh_total = [wh_total_B wh_total_U];

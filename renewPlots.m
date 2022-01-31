@@ -1,7 +1,9 @@
 function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
 %Generate plots based on given traces
-            
-    SkipInitialFrames = 1500;
+    
+    scale_factor = smooth_filter / 30;
+    SkipInitialFrames = 3000 * scale_factor;
+    disp(['Skip the first ' num2str(SkipInitialFrames) ' frames']);
     
     if nargin < 3
         smooth_filter = 30;
@@ -12,7 +14,7 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
 
     % Correct photobleaching
     if strcmp(colorflag,  'Blue_UVregressed')
-        f_detrend = doTopHat(avg_wf, 600);
+        f_detrend = doTopHat(avg_wf, 600 * scale_factor);
         dff = f_detrend;
     else
         x = 1:length(avg_wf); x = x';
@@ -28,7 +30,7 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
         %f_detrend = detrend(f_debleached, 2);
 
         % Detrend by tophat filtering
-        f_detrend = doTopHat(f_debleached, 600);
+        f_detrend = doTopHat(f_debleached, 600 * scale_factor);
 
         % Get dff
         dff = f_detrend./ meanF ;
@@ -93,7 +95,7 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
         wh_filt_smoothed_ = wh_filt_smoothed(1:length(zdff_detrend_smoothed));
         zdff_detrend_smoothed_ = zdff_detrend_smoothed;
     end
-    [c,lags] = xcorr(zdff_detrend_smoothed_, wh_filt_smoothed_, 600,'normalized');
+    [c,lags] = xcorr(zdff_detrend_smoothed_, wh_filt_smoothed_, 600 * scale_factor,'normalized');
     stem(lags,c)
     title('Cross-correlation btw zscored dFF and zscored motion energy')
     saveas(h5, [colorflag '_xcorr_zscored_smoothed.png'])

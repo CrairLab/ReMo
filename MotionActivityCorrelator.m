@@ -3,8 +3,10 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
     if nargin < 2 
         downFactor = 2;
         param.blueInitial = 0;
+        param.efr = 10;  %Note that this must be effective frame rates
     elseif nargin < 3
         param.blueInitial = 0;
+        param.efr = 10;  %Note that this must be effective frame rates
     end
 
     % Read in paths/ directories from summary_dirs.txt
@@ -15,6 +17,9 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
     % Go over each folder to do the analysis
     for i = 1:nDir
         cur_folder = DirList{i};
+        
+        disp(['Effective frame rate = ' num2str(param.efr)])
+
         % Do preprocessing
         A_dFoF = MotionActivityPreProcessing(cur_folder, downFactor, param);
         
