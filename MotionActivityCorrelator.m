@@ -45,6 +45,7 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
         end
         
         clear A_dFoF
+        clearAllMemoizedCaches;
     end
 
 end

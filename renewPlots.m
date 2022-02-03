@@ -66,23 +66,27 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
 
     h1 = figure;
     plot(wh_filt_z); hold on; plot(zdff_detrend);
+    cur_ax = gca; cur_xt = cur_ax.XTick; cur_xt_ = cur_xt + SkipInitialFrames; cur_ax.XTickLabel = num2cell(cur_xt_');
     legend('zscored motion energy', 'zscored dF/F'); xlabel('Frames')
     title('Motion vs dF/F'); xlim([1, length(avg_wf)]);
     saveas(h1, [colorflag '_motion_energy_vs_dff.png'])
 
     h2 = figure;
     plot(wh_filt_smoothed); hold on; plot(zdff_detrend_smoothed);
+    cur_ax = gca; cur_ax.XTickLabel = num2cell(cur_xt_');
     legend('abs zscored motion energy', 'zscored dF/F'); xlabel('Frames')
     title(['Motion vs dF/F (Smoothed = ' num2str(smooth_filter) ')']); 
     xlim([1, length(avg_wf)]);
     saveas(h2, [colorflag '_motion_energy_abs_vs_dff_smoothed.png'])
 
     h3 = figure; plot(dff); 
+    cur_ax = gca; cur_ax.XTickLabel = num2cell(cur_xt_');
     legend('dF/F'); xlabel('Frames')
     title('dF/F (detrended)'); xlim([1, length(avg_wf)]);
     saveas(h3, [colorflag '_detrendeddFF.png'])
 
-    h4 = figure; plot(dff_smoothed); 
+    h4 = figure; plot(dff_smoothed);
+    cur_ax = gca; cur_ax.XTickLabel = num2cell(cur_xt_');
     legend('dF/F (smoothed)'); xlabel('Frames')
     title('dF/F (detrended & smoothed)'); xlim([1, length(avg_wf)]);
     saveas(h4, [colorflag '_detrendeddFF_smoothed.png'])

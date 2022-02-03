@@ -79,8 +79,9 @@ function A_dFoF = doubleWavelengthsPipe(downFactor, param)
         clear A4B A4U
         
         % Gaussian smoothing
-        A6B = movieData.GauSmoo(A5B, 1); % Sigma = 1
-        A6U = movieData.GauSmoo(A5U, 1);
+        %A6B = movieData.GauSmoo(A5B, 1); % Sigma = 1
+        %A6U = movieData.GauSmoo(A5U, 1);
+        A6B = A5B; A6U = A5U;
 
         clear A5B A5U
         

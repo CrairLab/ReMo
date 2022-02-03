@@ -5,7 +5,7 @@ function wh_filt = ComputeMotionEnergy(downFactor, param)
         downFactor = 4;
         param.blueInitial = 0;
         param.efr = 10;
-    else
+    elseif nargin < 2
         param.blueInitial = 0;
         param.efr = 10;
     end
