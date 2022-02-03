@@ -22,8 +22,7 @@ function [avg_wf, wh_filt] = CorrelateMotionAndActivity(cur_folder, downFactor, 
         
         cd(cur_folder);
         smooth_filter = 30 * param.efr / 10; % Smooth over 30 frames if frame rate is 10 Hz
-        disp(['Working on ' cur_folder]);
-        
+              
         if ~exist(fn, 'file')
             
             %Get averaged fluorescent traces
@@ -45,7 +44,7 @@ function [avg_wf, wh_filt] = CorrelateMotionAndActivity(cur_folder, downFactor, 
             load(fn)            
         end
         
-        renewPlots(avg_wf, wh_filt, smooth_filter, colortag); %Replot
+        %renewPlots(avg_wf, wh_filt, smooth_filter, colortag); %Replot
         
     catch
         warning('Errors detected, skip this folder!')
