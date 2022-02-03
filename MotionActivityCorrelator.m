@@ -41,7 +41,8 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
         if param.blueInitial
             avg_wf = nanmean(nanmean(A_dFoF, 1),2);
             avg_wf = avg_wf(:);
-            renewPlots(avg_wf, wh_filt(:,1), 30, 'Blue_UVregressed')
+            smooth_filter = 30 * param.efr / 10;
+            renewPlots(avg_wf, wh_filt(:,1), smooth_filter, 'Blue_UVregressed')
         end
         
         clear A_dFoF
