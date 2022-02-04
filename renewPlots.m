@@ -1,15 +1,18 @@
 function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
 %Generate plots based on given traces
-    
-    scale_factor = smooth_filter / 30;
-    SkipInitialFrames = 3000 * scale_factor;
-    disp(['Skip the first ' num2str(SkipInitialFrames) ' frames']);
-    
+      
     if nargin < 3
         smooth_filter = 30;
         colorflag = 'Blue';
     elseif nargin < 4
         colorflag = 'Blue';
+    end
+    
+    if exist('parameters.mat', 'file')
+        scale_factor = param.fr/20;
+        save('parameters.mat', 'param')
+    else
+        scale_factor = 1;
     end
 
     % Correct photobleaching
@@ -37,6 +40,8 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
     end
     
     % Skip initial frames (light response etc)
+    SkipInitialFrames = 3000 * scale_factor;
+    disp(['Skip the first ' num2str(SkipInitialFrames) ' frames']);
     dff = dff(SkipInitialFrames: end);
     wh_filt_ = wh_filt(SkipInitialFrames: end);
     
