@@ -71,6 +71,7 @@ function A_dFoF = doubleWavelengthsPipe(downFactor, param)
           
         [A4B, A4U] = separateBlueUV(A4, param.blueInitial, 1);
         sz = size(A4B);
+        clear A4
 
         % Photobleaching correction
         A5B = movieData.bleachCorrection(A4B);

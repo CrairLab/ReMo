@@ -3,10 +3,12 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
     if nargin < 2 
         downFactor = 2;
         param.blueInitial = 0;
-        param.fr = 10;  
+        param.fr = 10;
+        param.smoothbase = 10;
     elseif nargin < 3
         param.blueInitial = 0;
-        param.fr = 10;  
+        param.fr = 10;
+        param.smoothbase = 10;
     end
     
     if param.blueInitial
@@ -19,7 +21,7 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
     end
     
     fn = [colortag '_summary_traces.mat'];
-    smooth_filter = 30 * param.efr / 10;
+    smooth_filter = param.smoothbase * param.efr / 10;
         
     % Read in paths/ directories from summary_dirs.txt
     DirList = readtext(txtpath);
@@ -49,7 +51,7 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
             % Correlate motion and activity if uv-regression is available 
             if param.blueInitial
                 avg_wf = nanmean(nanmean(A_dFoF, 1),2);
-                avg_wf = avg_wf(:);
+                avg_wf = avg_wf(:); cd(cur_folder)
                 renewPlots(avg_wf, wh_filt(:,1), smooth_filter, 'Blue_UVregressed')
             end
             
@@ -60,7 +62,7 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
             fn = [colortag '_summary_traces.mat'];
             summaryfile_path = fullfile(cur_folder, fn);
             load(summaryfile_path)
-            smooth_filter = 30 * param.efr / 10; cd(cur_folder)
+            smooth_filter = param.smoothbase * param.efr / 10; cd(cur_folder)
             renewPlots(avg_wf, wh_filt, smooth_filter, colortag); %Replot
             
             if param.blueInitial
@@ -69,7 +71,7 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
                 fn = [colortag '_summary_traces.mat'];
                 summaryfile_path = fullfile(cur_folder, fn);
                 load(summaryfile_path)
-                smooth_filter = 30 * param.efr / 10; cd(cur_folder)
+                smooth_filter = param.smoothbase * param.efr / 10; cd(cur_folder)
                 renewPlots(avg_wf, wh_filt, smooth_filter, colortag); %Replot
                 
                 % Renew individual channels: UV
@@ -77,7 +79,7 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
                 fn = [colortag '_summary_traces.mat'];
                 summaryfile_path = fullfile(cur_folder, fn);
                 load(summaryfile_path)
-                smooth_filter = 30 * param.efr / 10; cd(cur_folder)
+                smooth_filter = param.smoothbase * param.efr / 10; cd(cur_folder)
                 renewPlots(avg_wf, wh_filt, smooth_filter, colortag); %Replot
             end               
         end
