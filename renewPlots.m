@@ -9,6 +9,7 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
     end
     
     if exist('parameters.mat', 'file')
+        load('parameters.mat')
         scale_factor = param.fr/20;
         save('parameters.mat', 'param')
     else
@@ -115,7 +116,7 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
     save([colorflag '_summary_traces.mat'], 'avg_wf', 'zdff', 'wh_filt',...
         'wh_filt_thresh', 'zdff_detrend', 'zdff_detrend_smoothed', ...
         'wh_filt_z', 'wh_filt_smoothed', 'f_detrend', ...
-        'dff', 'dff_smoothed', 'SkipInitialFrames', 'smooth_filter')
+        'dff', 'dff_smoothed', 'SkipInitialFrames', 'smooth_filter', 'c', 'lags')
     
 end
 
