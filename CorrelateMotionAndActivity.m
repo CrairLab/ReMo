@@ -23,7 +23,7 @@ function [avg_wf, wh_filt] = CorrelateMotionAndActivity(cur_folder, downFactor, 
         fn = [colortag '_summary_traces.mat'];
         
         cd(cur_folder);
-        smooth_filter = param.smoothbase = 10; * param.efr / 10; % Smooth over 30 frames if frame rate is 10 Hz
+        smooth_filter = param.smoothbase * param.efr / 10; % Smooth over 30 frames if frame rate is 10 Hz
               
         if ~exist(fn, 'file')
             
