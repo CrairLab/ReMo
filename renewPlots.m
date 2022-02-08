@@ -96,7 +96,7 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
     cur_ax = gca; cur_ax.XTickLabel = num2cell(cur_xt_');
     saveas(h4, [colorflag '_detrendeddFF_smoothed.png'])
 
-    h5 = figure; 
+    h5 = figure; %Cross correlations
     if length(zdff_detrend_smoothed) >= length(wh_filt_smoothed)
         zdff_detrend_smoothed_ = zdff_detrend_smoothed(1:length(wh_filt_smoothed));
         wh_filt_smoothed_ = wh_filt_smoothed;
@@ -106,9 +106,10 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
     end
     [c,lags] = xcorr(zdff_detrend_smoothed_, wh_filt_smoothed_, 600 * scale_factor,'normalized');
     stem(lags,c); hold on
+    % Permutated cross correlations
     wh_p = wh_filt_smoothed_(randperm(length(wh_filt_smoothed_)));
-    [c,lags] = xcorr(zdff_detrend_smoothed_, wh_p, 600 * scale_factor,'normalized');
-    stem(lags,c); legend('Original', 'Permutated')
+    [c_p,lags_p] = xcorr(zdff_detrend_smoothed_, wh_p, 600 * scale_factor,'normalized');
+    stem(lags_p,c_p); legend('Original', 'Permutated')
     title(['Cross-correlation btw zscored dFF and zscored motion energy ('...
         num2str(smooth_filter), ')']);
     saveas(h5, [colorflag '_xcorr_zscored_smoothed.png'])
