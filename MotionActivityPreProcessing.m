@@ -10,8 +10,7 @@ function A_dFoF = MotionActivityPreProcessing(cur_folder, downFactor, param)
 
     cd(cur_folder);
     disp(['Working on ' cur_folder]);
-    save('parameters.mat', 'param')
-
+    
     savefn = ['Combined_downsampled_' num2str(downFactor) '_' ...
         num2str(param.blueInitial) '_filtered.mat'];
     
@@ -19,11 +18,11 @@ function A_dFoF = MotionActivityPreProcessing(cur_folder, downFactor, param)
         if param.blueInitial
             % Blue and UV 
             disp('Blue and UV dual wavelengths...')
-            A_dFoF = doubleWavelengthsPipe(downFactor, param);
+            [A_dFoF, hat] = doubleWavelengthsPipe(downFactor, param);
         else
             % Only Blue
             disp('Blue chanel only..')
-            A_dFoF = singleWavelengthPipe(downFactor);
+            [A_dFoF, hat] = singleWavelengthPipe(downFactor);
         end
         % Save A_dFoF
         save(savefn, 'A_dFoF', '-v7.3');
@@ -32,19 +31,21 @@ function A_dFoF = MotionActivityPreProcessing(cur_folder, downFactor, param)
         disp('Loading existing A_dFoF (filtered matrix)...')
     end
     
+    save('parameters.mat', 'param')
     clearAllMemoizedCaches;
     
 end
 
 
-function A_dFoF = singleWavelengthPipe(downFactor)
+function [A_dFoF, hat] = singleWavelengthPipe(downFactor)
 
         [~, ~, A4] = ReadAndGetAvg(downFactor, 1);
 
         % Photobleaching correction
-
-        A5 = movieData.bleachCorrection(A4);
-
+        %A5 = movieData.bleachCorrection(A4);
+        hat = 3000;
+        A5 = movieData.TopHatFiltering(A4, hat); 
+        
         clear A4
 
         % Gaussian smoothing
@@ -62,7 +63,7 @@ end
 
 
 
-function A_dFoF = doubleWavelengthsPipe(downFactor, param)
+function [A_dFoF, hat] = doubleWavelengthsPipe(downFactor, param)
 % Part of the code adopted from https://codeocean.com/capsule/8947953/tree/v1
 % Barson et al. Be aware of the assumption here: uv frames were triggered
 % by presceding blue frames
@@ -74,8 +75,11 @@ function A_dFoF = doubleWavelengthsPipe(downFactor, param)
         clear A4
 
         % Photobleaching correction
-        A5B = movieData.bleachCorrection(A4B);
-        A5U = movieData.bleachCorrection(A4U);
+        %A5B = movieData.bleachCorrection(A4B);
+        scale_factor = param.fr/20; hat = 6000 * scale_factor;
+        A5B = movieData.TopHatFiltering(A4B, hat);
+        %A5U = movieData.bleachCorrection(A4U);
+        A5U = movieData.TopHatFiltering(A4U, hat);
 
         clear A4B A4U
         

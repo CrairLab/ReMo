@@ -18,7 +18,8 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
 
     % Correct photobleaching
     if strcmp(colorflag,  'Blue_UVregressed')
-        f_detrend = doTopHat(avg_wf, 600 * scale_factor);
+        %f_detrend = doTopHat(avg_wf, 6000 * scale_factor);
+        f_detrend = avg_wf;
         dff = f_detrend;
     else
         x = 1:length(avg_wf); x = x';
@@ -34,7 +35,7 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
         %f_detrend = detrend(f_debleached, 2);
 
         % Detrend by tophat filtering
-        f_detrend = doTopHat(f_debleached, 600 * scale_factor);
+        f_detrend = doTopHat(f_debleached, 6000 * scale_factor);
 
         % Get dff
         dff = f_detrend./ meanF ;
@@ -54,7 +55,8 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
     zdff = zscore(dff);
 
     % zdff Detrend
-    zdff_detrend = detrend(zdff, 2);
+    %zdff_detrend = detrend(zdff, 2);
+    zdff_detrend = zdff;
 
     % zdff Smoothing 
     zdff_detrend_smoothed = smooth(zdff_detrend, smooth_filter);
@@ -104,12 +106,14 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
         wh_filt_smoothed_ = wh_filt_smoothed(1:length(zdff_detrend_smoothed));
         zdff_detrend_smoothed_ = zdff_detrend_smoothed;
     end
-    [c,lags] = xcorr(zdff_detrend_smoothed_, wh_filt_smoothed_, 600 * scale_factor,'normalized');
+    [c,lags] = xcorr(zdff_detrend_smoothed_, wh_filt_smoothed_, 6000 * scale_factor,'normalized');
     stem(lags,c); hold on
     % Permutated cross correlations
-    wh_p = wh_filt_smoothed_(randperm(length(wh_filt_smoothed_)));
-    [c_p,lags_p] = xcorr(zdff_detrend_smoothed_, wh_p, 600 * scale_factor,'normalized');
-    stem(lags_p,c_p); legend('Original', 'Permutated')
+    
+    [c_p, c_2p5, c_97p5, lags_p] = xcorr_circularPerm(zdff_detrend_smoothed_, wh_filt_smoothed_...
+        , 6000 * scale_factor);
+    stem(lags_p,c_p); plot(lags_p, c_2p5); plot(lags_p, c_97p5);    
+    legend('Original', 'Permutated (mean)', 'Permutated 2.5% ', 'Permutated 97.5%')
     title(['Cross-correlation btw zscored dFF and zscored motion energy ('...
         num2str(smooth_filter), ')']);
     saveas(h5, [colorflag '_xcorr_zscored_smoothed.png'])
@@ -130,5 +134,23 @@ function f_detrend = doTopHat(f_input, hat)
     f_detrend = imtophat(f_tophat', se);
     f_detrend = f_detrend(hat+1:end);
     f_detrend = f_detrend';
+
+end
+
+
+function [c, c_2p5, c_97p5, lags] = xcorr_circularPerm(x, y, maxlag)
+% Compute mean cross correlations based on random circular shifts
+n = 500; % Number of random trails
+c_total = zeros(2*maxlag+1, n);
+for i = 1:n
+    shift = randi(length(y));
+    y_ = circshift(y, shift);
+    [c, lags] = xcorr(x, y_, maxlag, 'normalized');
+    c_total(:, i) = c;
+end
+
+c_2p5 = prctile(c_total, 2.5, 2);
+c_97p5 = prctile(c_total, 97.5, 2);
+c = nanmean(c_total, 2);
 
 end

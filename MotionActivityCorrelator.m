@@ -59,8 +59,8 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
             disp('Loading existing summary traces and renew plots...')
             
             % Renew the primary channel (Blue_UVregressed or Blue)
-            fn = [colortag '_summary_traces.mat'];
-            summaryfile_path = fullfile(cur_folder, fn);
+            fn_BU = [colortag '_summary_traces.mat'];
+            summaryfile_path = fullfile(cur_folder, fn_BU);
             load(summaryfile_path, 'avg_wf', 'wh_filt')
             smooth_filter = param.smoothbase * param.efr / 10; cd(cur_folder)
             renewPlots(avg_wf, wh_filt, smooth_filter, colortag); %Replot
@@ -68,16 +68,16 @@ function MotionActivityCorrelator(txtpath, downFactor, param)
             if param.blueInitial
                 % Renew individual channels: Blue
                 colortag_B = 'Blue';
-                fn = [colortag_B '_summary_traces.mat'];
-                summaryfile_path = fullfile(cur_folder, fn);
+                fn_B = [colortag_B '_summary_traces.mat'];
+                summaryfile_path = fullfile(cur_folder, fn_B);
                 load(summaryfile_path, 'avg_wf', 'wh_filt')
                 smooth_filter = param.smoothbase * param.efr / 10; cd(cur_folder)
                 renewPlots(avg_wf, wh_filt, smooth_filter, colortag_B); %Replot
                 
                 % Renew individual channels: UV
                 colortag_U = 'UV';
-                fn = [colortag_U '_summary_traces.mat'];
-                summaryfile_path = fullfile(cur_folder, fn);
+                fn_U = [colortag_U '_summary_traces.mat'];
+                summaryfile_path = fullfile(cur_folder, fn_U);
                 load(summaryfile_path, 'avg_wf', 'wh_filt')
                 smooth_filter = param.smoothbase * param.efr / 10; cd(cur_folder)
                 renewPlots(avg_wf, wh_filt, smooth_filter, colortag_U); %Replot
