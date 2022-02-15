@@ -54,7 +54,7 @@ function [A3, output_all] = ReadRegisterRoi(filename, roi, downFactor, param)
     else
         A3 = A2;
     end
-
+    
     clear A2
             
 end
