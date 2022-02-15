@@ -18,6 +18,12 @@ function wh_filt = ComputeMotionEnergy(downFactor, param)
     if exist(searchfile, 'file')
         load(searchfile);
         disp('Loading existing motion energy data...')
+        
+        if ~exist('wh_filt', 'var')
+           wh_filt = compute_wh_filt(wh_mot, wh_total);;
+           save(searchfile,'wh_mot','wh_total','wh_filt','mot_frame');
+        end
+
     else
         reader = VideoReader(fullfile(listing.folder,listing.name));
         nframes = reader.NumFrames;
@@ -60,7 +66,7 @@ function wh_filt = ComputeMotionEnergy(downFactor, param)
             % Plot motion energy
             %plotMotionEnergy(wh_filt, moviename)
         end
-
+        
         save(searchfile,'wh_mot','wh_total','wh_filt','mot_frame');
     end
 

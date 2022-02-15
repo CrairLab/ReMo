@@ -35,13 +35,18 @@ function [avg_wf, motion_detected, downA] = ReadAndGetAvg(downFactor, loadmovie,
             tic;
             disp(['Reading movie #' num2str(i)]);
             
+            if i == 16
+                warning('Stop Reading More Movies to Avoid Out-of-memory Errors')
+                break;
+            end
+            
             % Read movies, rigid-registration, and apply rois
             [A3, output_all] = ReadRegisterRoi(movieList(i).name, roi, downFactor, param);
             motion_detected = [motion_detected; output_all];
-            
+                       
             % Concatenate downsampled movies
             downA = cat(3, downA, A3);
-
+                        
             clear A3;
             clearAllMemoizedCaches;
             toc;

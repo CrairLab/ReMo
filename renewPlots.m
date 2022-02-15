@@ -35,7 +35,8 @@ function renewPlots(avg_wf, wh_filt, smooth_filter, colorflag)
         %f_detrend = detrend(f_debleached, 2);
 
         % Detrend by tophat filtering
-        f_detrend = doTopHat(f_debleached, 6000 * scale_factor);
+        %f_detrend = doTopHat(f_debleached, 6000 * scale_factor);
+        f_detrend = f_debleached;
 
         % Get dff
         dff = f_detrend./ meanF ;

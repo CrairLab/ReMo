@@ -30,7 +30,6 @@ function A_dFoF = MotionActivityPreProcessing(cur_folder, downFactor, param)
         load(savefn)
         disp('Loading existing A_dFoF (filtered matrix)...')
     end
-    
     save('parameters.mat', 'param')
     clearAllMemoizedCaches;
     
@@ -42,14 +41,15 @@ function [A_dFoF, hat] = singleWavelengthPipe(downFactor)
         [~, ~, A4] = ReadAndGetAvg(downFactor, 1);
 
         % Photobleaching correction
-        %A5 = movieData.bleachCorrection(A4);
-        hat = 3000;
-        A5 = movieData.TopHatFiltering(A4, hat); 
+        A5 = movieData.bleachCorrection(A4);
+        %hat = 3000;
+        %A5 = movieData.TopHatFiltering(A4, hat); 
         
         clear A4
 
         % Gaussian smoothing
-        A6 = movieData.GauSmoo(A5, 1); % Sigma = 1
+        %A6 = movieData.GauSmoo(A5, 1); % Sigma = 1
+        A6 = A5;
 
         clear A5
 
@@ -75,11 +75,11 @@ function [A_dFoF, hat] = doubleWavelengthsPipe(downFactor, param)
         clear A4
 
         % Photobleaching correction
-        %A5B = movieData.bleachCorrection(A4B);
-        scale_factor = param.fr/20; hat = 6000 * scale_factor;
-        A5B = movieData.TopHatFiltering(A4B, hat);
-        %A5U = movieData.bleachCorrection(A4U);
-        A5U = movieData.TopHatFiltering(A4U, hat);
+        A5B = movieData.bleachCorrection(A4B);
+        %scale_factor = param.fr/20; hat = 6000 * scale_factor;
+        %A5B = movieData.TopHatFiltering(A4B, hat);
+        A5U = movieData.bleachCorrection(A4U);
+        %A5U = movieData.TopHatFiltering(A4U, hat);
 
         clear A4B A4U
         
