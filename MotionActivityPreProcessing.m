@@ -42,7 +42,7 @@ function [A_dFoF, hat] = singleWavelengthPipe(downFactor)
 
         % Photobleaching correction
         A5 = movieData.bleachCorrection(A4);
-        %hat = 3000;
+        hat = 3000;
         %A5 = movieData.TopHatFiltering(A4, hat); 
         
         clear A4
@@ -76,7 +76,7 @@ function [A_dFoF, hat] = doubleWavelengthsPipe(downFactor, param)
 
         % Photobleaching correction
         A5B = movieData.bleachCorrection(A4B);
-        %scale_factor = param.fr/20; hat = 6000 * scale_factor;
+        scale_factor = param.fr/20; hat = 6000 * scale_factor;
         %A5B = movieData.TopHatFiltering(A4B, hat);
         A5U = movieData.bleachCorrection(A4U);
         %A5U = movieData.TopHatFiltering(A4U, hat);
