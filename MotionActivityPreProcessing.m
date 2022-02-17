@@ -90,6 +90,10 @@ function [A_dFoF, hat] = doubleWavelengthsPipe(downFactor, param)
 
         clear A5B A5U
         
+        % Get the A_dFoF for just the blue channel
+        A_dFoF = single(movieData.grossDFoverF(A6B, 1, 50));
+        save('Blue_dFF_only.mat', 'A_dFoF', '-v7.3'); clear A_dFoF
+        
         % Regressing out UV signals
         A6B_ = reshape(A6B, [sz(1)*sz(2), sz(3)]);
         A6U_ = reshape(A6U, [sz(1)*sz(2), sz(3)]);
