@@ -33,14 +33,28 @@ function wh_filt = ComputeMotionEnergy(downFactor, param)
         disp('Reading the infra-red cam movie...')
 
         parfor i = 1:nframes
-
-            if(rem(i,1000) == 0) 
-                fprintf('%d out of %d frames processed\n',i,nframes)
+            try
+                if(rem(i,1000) == 0) 
+                    fprintf('%d out of %d frames processed\n',i,nframes)
+                end
+                % Do downsampling to save memory
+                curFrame = rgb2gray(read(reader, i));
+                downFrame = imresize(curFrame, 1/downFactor, 'bilinear');
+                movA(:,:,i) = downFrame;
+            catch
+                disp(num2str(i))
             end
-            % Do downsampling to save memory
-            curFrame = rgb2gray(read(reader, i));
-            downFrame = imresize(curFrame, 1/downFactor, 'bilinear');
-            movA(:,:,i) = downFrame;
+        end
+        
+        sz = size(movA);
+        if sz(3) < 21005
+            movA_ = nan(sz(1), sz(2), sz(3) * 2);
+            movA_ = uint8(movA_);
+            movA_(:,:,1:2:sz(3)*2) = movA;
+            movA_(:,:,2:2:sz(3)*2) = movA;
+            movA = movA_; clear movA_
+            disp(['Original #frames = ' num2str(sz(3))])
+            warning('Frames skipping occurred during recording, doubling frames!')
         end
         
         if param.blueInitial

@@ -9,6 +9,7 @@ function MakeBlueOnlyMovieFromDownA(downA)
     end
 
     [A4B, ~] = separateBlueUV(downA, blueInitial, matchflag);
+    clear downA
 
     % Photobleaching correction
     A5 = movieData.bleachCorrection(A4B);
@@ -26,6 +27,9 @@ function MakeBlueOnlyMovieFromDownA(downA)
     % dFoF
     A_dFoF = movieData.grossDFoverF(A6, 1, 50);
     A_dFoF = single(A_dFoF);
+    
+    % Make a dFoF movie
+    movieData.makePseudoColorMovie(A_dFoF, 'Blue_only_movie_20Hz.avi', 20)
 
     clear A6
 
